@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Mortgage Made Manageable</title>
+<link rel="manifest" href="data:application/manifest+json,{%22name%22:%22ROSE%20Budget%20Tool%22,%22short_name%22:%22ROSE%22,%22start_url%22:%22.%22,%22display%22:%22standalone%22,%22background_color%22:%22%23111827%22,%22theme_color%22:%22%23111827%22}">
+<style>
+:root {
+  --bg: #111827;
+  --card: #1f2937;
+  --text: #f3f4f6;
+  --accent: #38bdf8;
+  --border: #374151;
+}
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  padding: env(safe-area-inset-top, 20px) 20px 20px 20px;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+}
+.calc-box {
+  width: 100%;
+  max-width: 440px;
+  background: var(--card);
+  padding: 25px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  box-sizing: border-box;
+  margin-top: 10px;
+}
+h2 {
+  margin: 0 0 5px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+}
+  .home-title {
+  font-size: 32px; 
+  display: block;  
+  margin-top: 5px; 
+}
+.subtitle {
+  font-size: 13px;
+  color: #9ca3af;
+  text-align: center;
+  margin-bottom: 25px;
+}
+label {
+  display: block;
+  margin: 18px 0 6px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #e5e7eb;
+}
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.prefix {
+  position: absolute;
+  left: 12px;
+  color: #9ca3af;
+  font-size: 16px;
+  pointer-events: none;
+}
+input[type="number"], select {
+  width: 100%;
+  padding: 12px 12px 12px 28px;
+  background: #111827;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: #fff;
+  box-sizing: border-box;
+  font-size: 16px;
+  -webkit-appearance: none;
+}
+select {
+  padding-left: 16px;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://w3.org' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+}
+input:focus, select:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+.sub-display {
+  font-size: 12px;
+  color: #9ca3af;
+  margin-top: 4px;
+  padding-left: 4px;
+  display: block;
+}
+.tax-breakdown-box {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 8px;
+}
+.tax-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #9ca3af;
+  margin-bottom: 4px;
+}
+.tax-row:last-child {
+  margin-bottom: 0;
+}
+.tax-row.total-row {
+  border-top: 1px solid var(--border);
+  margin-top: 6px;
+  padding-top: 6px;
+  color: #fff;
+  font-weight: 600;
+}
+.result-box {
+  background: rgba(56, 189, 248, 0.1);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  padding: 18px;
+  margin-top: 25px;
+  border-radius: 10px;
+  text-align: center;
+}
+.result-label {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #9ca3af;
+  margin-bottom: 4px;
+}
+.price {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--accent);
+  margin: 2px 0 6px;
+}
+.range {
+  font-size: 13px;
+  color: #fff;
+  font-weight: 500;
+  background: rgba(255,255,255,0.05);
+  padding: 6px 12px;
+  border-radius: 20px;
+  display: inline-block;
+}
+</style>
+</head>
+<body>
+
+<div class="calc-box">
+  <h2>Welcome <br><span class="home-title">H.O.M.E.</span></h2>
+  <div class="subtitle">Helpful One-stop Mortgage Estimator</div>
+
+  <label>House Purchase Price</label>
+  <div class="input-wrapper">
+    <span class="prefix">$</span>
+    <input type="number" id="homePrice" value="350000" oninput="calculatePITI()">
+  </div>
+
+  <label>Down Payment Percentage</label>
+  <div class="input-wrapper">
+    <span class="prefix">%</span>
+    <input type="number" id="downPayment" value="20" oninput="calculatePITI()">
+  </div>
+  
+  <!-- This element must sit directly outside input wrappers to stack correctly -->
+  <span class="sub-display" id="pmiDisplay">Down Payment: $70,000.00 | PMI Breakdown: $0.00 / mo</span>
+
+<!-- VA Loan Configuration Toggle Container -->
+<div style="background: rgba(255,255,255,0.01); padding: 10px; border-radius: 8px; border: 1px solid #374151; margin: 10px 0; clear: both;">
+  <div style="display: flex; align-items: center; justify-content: space-between;">
+    <span style="font-size: 13px; font-weight: 600; color: #e5e7eb;">Utilizing a VA Mortgage Loan?</span>
+    <label class="switch" style="position: relative; display: inline-block; width: 44px; height: 24px; margin: 0;">
+      <input type="checkbox" id="vaLoanToggle" onchange="handleVAToggle()">
+      <span class="slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #374151; transition: .2s; border-radius: 24px;"></span>
+    </label>
+  </div>
+  <div style="font-size: 10.5px; color: #9ca3af; margin-top: 6px; line-height: 1.4; border-top: 1px solid #374151; padding-top: 5px;">
+    *This toggle is only for Veterans utilizing a VA loan. VA loans may only be used on a primary residence.
+  </div>
+</div>
+
+  <label>Mortgage Interest Rate</label>
+  <div class="input-wrapper">
+    <span class="prefix">%</span>
+    <input type="number" id="interestRate" value="6.5" step="0.1" oninput="calculatePITI()">
+  </div>
+
+  <label>Annual Home Insurance Premium</label>
+  <div class="input-wrapper">
+    <span class="prefix">$</span>
+    <input type="number" id="annualInsurance" value="3000" step="10" oninput="calculatePITI()">
+  </div>
+  <span class="sub-display" id="monthlyInsDisplay">Monthly breakdown: $0.00 / mo</span>
+
+  <!-- Unified ISD Homestead Toggle Switch -->
+  <div class="toggle-wrapper" style="display: flex; align-items: center; justify-content: space-between; background: #111827; padding: 12px; border-radius: 8px; border: 1px solid var(--border); margin: 15px 0;">
+    <span class="toggle-label" style="font-size: 14px; font-weight: 600; color: #e5e7eb;">Apply General ISD Homestead Exemption</span>
+    <label class="switch" style="position: relative; display: inline-block; width: 44px; height: 24px;">
+      <input type="checkbox" id="homesteadToggle" onchange="calculatePITI()" style="opacity: 0; width: 0; height: 0;">
+      <span class="slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #374151; transition: .2s; border-radius: 24px;"></span>
+    </label>
+</div>
+    <!-- The Disclosure Blurb -->
+  <div style="font-size: 11px; color: #9ca3af; margin-top: 10px; line-height: 1.4; font-weight: 400; border-top: 1px solid #374151; padding-top: 8px;">
+    *An Independent School District (ISD) homestead exemption can only be used on a person's primary, principal residence. You cannot claim it on second homes, vacation homes, or rental/investment properties, and you are limited to only one homestead exemption at a time.
+  </div>
+  <!-- Zip Code Location Selector with Human Readable Splitting -->
+  <label>Property Location (Zip Region)</label>
+  <select id="zipSelector" onchange="calculatePITI()">
+    <option value="76201">76201 (Denton Core)</option>
+    <option value="76207">76207 (North/West Denton)</option>
+    <option value="76226-1500">76226-1500 (Northlake / Northwest ISD)</option>
+    <option value="76226-6467">76226-6467 (Lantana Development)</option>
+    <option value="76226-0308">76226-0308 (Argyle Town / Argyle ISD)</option>
+    <option value="76210">76210 (South Denton / Corinth Area)</option>
+    <option value="75077">75077 (Lewisville / Highland Village Area)</option>
+  </select>
+
+  <div class="tax-breakdown-box" id="taxBreakdownContainer"></div>
+
+  <div class="result-box">
+    <div class="result-label">Your Monthly Payment (PITI)</div>
+    <div class="price" id="totalMonthly">$0.00</div>
+    <div class="range" id="ballparkRange">Safe Budget Range: $0 - $0</div>
+  </div>
+  <div style="font-size: 11px; color: #9ca3af; margin-top: 10px; line-height: 1.4; font-weight: 400; border-top: 1px solid #374151; padding-top: 8px;">
+    *This estimator is not a garrauntee of what your mortgage payment will be.  This estimator is meant to be a localized tool to help you get a BETTER estimation using more accurate geographical data than common home listing sites.  Only your lender team can identify your actual likely mortgage/PITI.
+  </div>
+</div>
+
+<script>
+// Isolated ZIP+4 Extension Database Schema
+const TAX_DATABASE = {
+  "76201": [
+    { name: "Denton ISD", rate: 0.01156900 },
+    { name: "City of Denton", rate: 0.00595420 },
+    { name: "Denton County", rate: 0.00185938 }
+  ],
+  "76207": [
+    { name: "Denton ISD", rate: 0.01156900 },
+    { name: "City of Denton", rate: 0.00595420 },
+    { name: "Denton County", rate: 0.00185938 }
+  ],
+  "76226-1500": [
+    { name: "Northwest ISD", rate: 0.01117900 },
+    { name: "Town of Northlake", rate: 0.00295000 },
+    { name: "Denton County", rate: 0.00185938 }
+  ],
+  "76226-6467": [
+    { name: "Argyle ISD", rate: 0.01172700 },
+    { name: "Denton County", rate: 0.00185938 },
+    { name: "Lantana FWSD Baseline", rate: 0.00850000 }
+  ],
+  "76226-0308": [
+    { name: "Argyle ISD", rate: 0.01172700 },
+    { name: "Town of Argyle", rate: 0.00395000 },
+    { name: "Denton County", rate: 0.00185938 }
+  ],
+  "76210": [
+    { name: "Lake Dallas ISD", rate: 0.01170000 },
+    { name: "City of Corinth", rate: 0.00537090 },
+    { name: "Denton County", rate: 0.00185938 }
+  ],
+  "75077": [
+    { name: "Lewisville ISD", rate: 0.01117800 },
+    { name: "City of Lewisville", rate: 0.00419000 },
+    { name: "Denton County", rate: 0.00185938 }
+  ]
+};
+
+function calculatePITI() {
+  // Read values and use Math.max to instantly force any negative numbers to 0
+  const price = Math.max(0, parseFloat(document.getElementById('homePrice').value) || 0);
+  const downPercent = Math.max(0, parseFloat(document.getElementById('downPayment').value) || 0);
+  const annualRate = Math.max(0, parseFloat(document.getElementById('interestRate').value) || 0);
+  const annualIns = Math.max(0, parseFloat(document.getElementById('annualInsurance').value) || 0);
+  const selectedZip = document.getElementById('zipSelector').value;
+
+  // ALSO: Visually reset the text boxes to 0 if a user manually typed a negative
+  ['homePrice', 'downPayment', 'interestRate', 'annualInsurance'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el && parseFloat(el.value) < 0) el.value = 0;
+  });
+
+  // === NEW DOWN PAYMENT CASH CALCULATION (LAYOUT RESTORED) ===
+  const downPaymentCashAmount = (price * downPercent) / 100;
+  const formattedCash = downPaymentCashAmount.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  
+  // This updates JUST the inner text, preserving the container properties so it stacks vertically
+  const pmiDisplayEl = document.getElementById('pmiDisplay');
+  if (pmiDisplayEl) {
+    pmiDisplayEl.innerText = `Down Payment: $${formattedCash} | PMI Breakdown: $0.00 / mo`;
+  }
+  // =========================================
+
+// 1. Calculate Core Loan Mechanics
+  const downDollarAmount = price * (downPercent / 100);
+  const loanAmount = Math.max(0, price - downDollarAmount);
+  const ltvRatio = price > 0 ? (loanAmount / price) * 100 : 0;
+
+  // Format the down payment dollar amount for display
+  const formattedDownCash = downDollarAmount.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+  // 2. Process PMI Flags (With VA Exception Overrides)
+  const isVALoan = document.getElementById('vaLoanToggle').checked;
+  let monthlyPMI = 0;
+
+  if (isVALoan) {
+    // VA loans explicitly carry $0 monthly PMI penalties
+    document.getElementById('pmiDisplay').innerText = `Down Payment: $${formattedDownCash} | PMI Breakdown: $0.00 / mo (VA Loan)`;
+    document.getElementById('pmiDisplay').style.color = '#38bdf8'; // Theme blue accent for approved status
+  } else if (ltvRatio > 80 && loanAmount > 0) {
+    const annualPMIRate = 0.007; 
+    monthlyPMI = (loanAmount * annualPMIRate) / 12;
+    const formattedPMI = monthlyPMI.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    
+    document.getElementById('pmiDisplay').innerText = `Down Payment: $${formattedDownCash} | PMI Breakdown: $${formattedPMI} / mo (LTV: ${ltvRatio.toFixed(1)}%)`;
+    document.getElementById('pmiDisplay').style.color = '#fbbf24'; 
+  } else {
+    document.getElementById('pmiDisplay').innerText = `Down Payment: $${formattedDownCash} | PMI Breakdown: $0.00 / mo (LTV: ${ltvRatio.toFixed(1)}% - No PMI)`;
+    document.getElementById('pmiDisplay').style.color = '#9ca3af'; 
+  }
+
+  // 3. Insurance Processing
+  const monthlyIns = annualIns / 12;
+  document.getElementById('monthlyInsDisplay').innerText = 'Monthly breakdown: $' + monthlyIns.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' / mo';
+
+  // 4. Principal & Interest Formula Mechanics
+  const monthlyRate = (annualRate / 100) / 12;
+  const totalPayments = 360;
+  let monthlyPI = 0;
+  
+  if (monthlyRate === 0) {
+    monthlyPI = loanAmount / totalPayments;
+  } else {
+    monthlyPI = loanAmount * (monthlyRate * Math.pow(1 + monthlyRate, totalPayments)) / (Math.pow(1 + monthlyRate, totalPayments) - 1);
+  }
+
+   // 5. Dynamic Loop Engine with Unified ISD Homestead Logic
+  const activeTaxEntities = TAX_DATABASE[selectedZip] || [];
+  const isHomesteadExempt = document.getElementById('homesteadToggle').checked;
+  let annualTaxSum = 0;
+  let breakdownHTML = '';
+
+  activeTaxEntities.forEach(entity => {
+    // Check if the entity is a School District and toggle is active
+    let taxableValue = price;
+    if (isHomesteadExempt && entity.name.toUpperCase().includes("ISD")) {
+      taxableValue = Math.max(0, price - 140000);
+    }
+
+    const entityTaxAmount = taxableValue * entity.rate;
+    annualTaxSum += entityTaxAmount;
+    
+    breakdownHTML += `
+      <div class="tax-row">
+        <span>${entity.name} (${(entity.rate * 100).toFixed(4)}%)</span>
+        <span>$${Math.round(entityTaxAmount).toLocaleString('en-US')}/yr</span>
+      </div>
+<style>
+  /* Animates and colors both tracks when checked */
+  #homesteadToggle:checked + .slider,
+  #vaLoanToggle:checked + .slider {
+    background-color: #38bdf8 !important; /* Soft accent blue */
+  }
+
+  /* Moves both white knob circles to the right when checked */
+  #homesteadToggle:checked + .slider:before,
+  #vaLoanToggle:checked + .slider:before {
+    transform: translateX(20px) !important; 
+  }
+  /* Creates the white physical circle knob on the slider */
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .2s;
+    border-radius: 50%;
+  }
+</style>
+    `;
+  });
+
+  const monthlyTax = annualTaxSum / 12;
+  const combinedPercentage = activeTaxEntities.reduce((sum, item) => sum + item.rate, 0) * 100;
+
+  breakdownHTML += `
+    <div class="tax-row total-row">
+      <span>Est. Combined Rate</span>
+      <span>${combinedPercentage.toFixed(3)}%</span>
+    </div>
+  `;
+  document.getElementById('taxBreakdownContainer').innerHTML = breakdownHTML;
+
+  // 6. Final Computations
+  const totalPITI = monthlyPI + monthlyTax + monthlyIns + monthlyPMI;
+  const lowRange = Math.floor((totalPITI - 100) / 100) * 100;
+  const highRange = Math.ceil((totalPITI + 100) / 100) * 100;
+
+   // 7. Render Output to DOM
+  document.getElementById('totalMonthly').innerText = '$' + totalPITI.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  document.getElementById('ballparkRange').innerText = 'Safe Budget Range: $' + lowRange.toLocaleString('en-US') + ' to $' + highRange.toLocaleString('en-US');
+}
+
+calculatePITI();
+function handleVAToggle() {
+  const isVA = document.getElementById('vaLoanToggle').checked;
+  if (isVA) {
+    document.getElementById('downPayment').value = 0;
+  } else {
+    // Automatically restore your 20% default when the VA toggle is turned off
+    document.getElementById('downPayment').value = 20;
+  }
+  calculatePITI();
+}
+</script>
+
+</body>
+</html>
